@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+
+<html class="scroll-smooth" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Rawat Organics | The Botanical Atelier</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;family=Manrope:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "tertiary": "#131900",
+              "surface-container-low": "#f4f4ef",
+              "on-error-container": "#93000a",
+              "surface-container-highest": "#e3e3de",
+              "secondary": "#6c5b4e",
+              "background": "#fafaf5",
+              "surface-bright": "#fafaf5",
+              "on-surface": "#1a1c19",
+              "inverse-surface": "#2f312e",
+              "tertiary-fixed": "#dde9a9",
+              "surface-tint": "#496455",
+              "surface-variant": "#e3e3de",
+              "error-container": "#ffdad6",
+              "error": "#ba1a1a",
+              "on-secondary-container": "#726153",
+              "on-background": "#1a1c19",
+              "on-tertiary": "#ffffff",
+              "inverse-primary": "#b0cdbb",
+              "surface-container-high": "#e8e8e3",
+              "primary-container": "#173124",
+              "secondary-fixed": "#f6decd",
+              "primary-fixed": "#ccead6",
+              "secondary-fixed-dim": "#d9c2b2",
+              "on-primary-container": "#7d9988",
+              "on-error": "#ffffff",
+              "on-primary-fixed-variant": "#324c3e",
+              "on-secondary-fixed": "#25190f",
+              "surface-container-lowest": "#ffffff",
+              "surface": "#fafaf5",
+              "outline-variant": "#c3c8c1",
+              "on-tertiary-fixed-variant": "#414b1b",
+              "surface-dim": "#dadad5",
+              "surface-container": "#eeeee9",
+              "on-primary-fixed": "#062014",
+              "tertiary-fixed-dim": "#c1cd8f",
+              "outline": "#737973",
+              "on-surface-variant": "#434843",
+              "on-secondary-fixed-variant": "#534437",
+              "on-primary": "#ffffff",
+              "on-tertiary-fixed": "#181e00",
+              "primary": "#021c10",
+              "inverse-on-surface": "#f1f1ec",
+              "primary-fixed-dim": "#b0cdbb",
+              "on-secondary": "#ffffff",
+              "tertiary-container": "#262f02",
+              "secondary-container": "#f6decd",
+              "on-tertiary-container": "#8d985f"
+            },
+            fontFamily: {
+              "headline": ["Plus Jakarta Sans"],
+              "body": ["Manrope"],
+              "label": ["Manrope"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-nav {
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+        .editorial-shadow {
+            box-shadow: 0 20px 40px -15px rgba(26, 28, 25, 0.06);
+        }
+        .parallax-bg {
+            background-attachment: fixed;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body selection:bg-primary-fixed selection:text-on-primary-fixed">
+<!-- TopAppBar -->
+<nav class="fixed top-0 w-full z-50 bg-surface/70 dark:bg-zinc-950/70 backdrop-blur-md">
+<div class="flex justify-between items-center w-full px-8 py-6 max-w-screen-2xl mx-auto">
+<div class="text-xl font-bold tracking-tighter text-emerald-950 dark:text-emerald-50 font-headline">
+                Rawat Organics
+            </div>
+<div class="hidden md:flex items-center space-x-10 font-headline tracking-tight font-bold text-sm">
+<a class="text-emerald-900 dark:text-emerald-100 font-bold border-b-2 border-emerald-900 dark:border-emerald-100 pb-1 hover:scale-105 transition-transform duration-300" href="#">Home</a>
+<a class="text-emerald-950/60 dark:text-emerald-50/60 hover:text-emerald-950 dark:hover:text-emerald-50 transition-colors hover:scale-105 transition-transform duration-300" href="#story">Our Story</a>
+<a class="text-emerald-950/60 dark:text-emerald-50/60 hover:text-emerald-950 dark:hover:text-emerald-50 transition-colors hover:scale-105 transition-transform duration-300" href="#collection">Collection</a>
+<a class="text-emerald-950/60 dark:text-emerald-50/60 hover:text-emerald-950 dark:hover:text-emerald-50 transition-colors hover:scale-105 transition-transform duration-300" href="#contact">Contact</a>
+</div>
+<button class="bg-primary-container text-on-primary-container px-6 py-2 rounded-full font-headline text-sm font-bold active:scale-95 duration-200 transition-all hover:scale-105 transition-transform">
+                Inquire
+            </button>
+</div>
+</nav>
+<!-- Hero Section -->
+<section class="relative h-screen flex items-center justify-center overflow-hidden">
+<div class="absolute inset-0 z-0">
+<img class="w-full h-full object-cover filter brightness-75 scale-105" data-alt="cinematic wide shot of a misty organic farm at dawn with soft rolling hills and lush green vegetation under a hazy sky" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDftuNAttwmj9aD_-wP0AwdJ59iEToxFGksMleOwWrVNDtg15M8hfSz_DYcPOLKpWJNyKnJfNbZH7_BzJUdUfS0g5v5KdLT8KiGzdi2c2teAZpk22fTgG1YfNVeuNZLwEVF_mkai8xHhlzX_8bI3irE6EnW2d46df0kgoSMxMZzxJ1v0PFm5KsziyIE3l06pqtKS6C7uQwsJ5nKlXn1IBMvnSW3RKnigFUAWkGlANaDYSzQukm2xuPtFV_Wlvr2k3qKmAyW1ZARdDKW"/>
+<div class="absolute inset-0 bg-gradient-to-b from-primary/30 via-transparent to-background"></div>
+</div>
+<div class="relative z-10 text-center px-4 max-w-4xl mx-auto">
+<h1 class="text-white font-headline font-extrabold text-5xl md:text-8xl tracking-tighter mb-8 leading-[1.1]">
+                Pure. Natural. Organic.
+            </h1>
+<p class="text-white/90 text-lg md:text-xl font-light mb-12 max-w-2xl mx-auto leading-relaxed">
+                Experience the heritage of soil. A botanical atelier dedicated to cultivating the essence of nature’s most refined harvests.
+            </p>
+<div class="flex flex-col md:flex-row items-center justify-center gap-6">
+<button class="w-full md:w-auto px-10 py-5 bg-gradient-to-r from-primary to-primary-container text-on-primary rounded-full font-headline font-bold text-lg hover:scale-105 active:scale-95 transition-all duration-300 shadow-xl">
+                    Inquire Now
+                </button>
+<button class="w-full md:w-auto px-10 py-5 bg-white/10 backdrop-blur-md text-white border border-white/20 rounded-full font-headline font-bold text-lg hover:bg-white/20 transition-all duration-300">
+                    Our Story
+                </button>
+</div>
+</div>
+<!-- Floating Elements Placeholder -->
+<div class="absolute top-1/4 left-10 opacity-40 animate-bounce transition-all duration-1000">
+<span class="material-symbols-outlined text-white text-6xl">spa</span>
+</div>
+<div class="absolute bottom-1/4 right-20 opacity-30 animate-pulse transition-all duration-1000">
+<span class="material-symbols-outlined text-white text-4xl">eco</span>
+</div>
+</section>
+<!-- About Section: The Rawat Story -->
+<section class="py-32 px-8 bg-surface" id="story">
+<div class="max-w-screen-2xl mx-auto">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
+<div class="lg:col-span-5 relative">
+<div class="relative z-10 aspect-[4/5] rounded-3xl overflow-hidden editorial-shadow">
+<img class="w-full h-full object-cover" data-alt="close-up of weathered hands gently cradling rich dark organic soil with small green sprouts beginning to emerge" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCDspvZpS583_st5rDrCv6H86SVfBtU_oTs6AyW-qXoRjkex1KjlLKROdgKfq7Nq6Fkukiq7TU845ECGxfCBAvzzi5c3InGH2LMGcPINNZhxWzH02LjsnqNgI7cDzoueYvvx76PiP8YMJqgsVEkAAP-FVx3W4xhr4BDNS54LQGlCwohb_xiz53D4koQrQYLbqlDoorU1kOyoM4V2ma1KPXDhJE3DF2BTnSnKFMQWiJlIRgL6iFg50tfvoDMveOpNwVf39ipT_wqmCNE"/>
+</div>
+<!-- Decorative overlapping element -->
+<div class="absolute -bottom-12 -right-12 w-2/3 aspect-square rounded-3xl overflow-hidden editorial-shadow border-8 border-surface z-20 hidden md:block">
+<img class="w-full h-full object-cover" data-alt="overhead shot of various organic heritage grains like lentils, rice, and seeds arranged in an artistic botanical pattern" src="https://lh3.googleusercontent.com/aida-public/AB6AXuArT5qR-Sf9XzWAxaOPWbJjXQunLyMNESt-HC9OfDgEA2ZaClscq40VAfcEYG55_RTKz3Io8ZZeK04NpA05-_VyTyI0wUTXj0srkbirJxnhLV76KTQMXgfdTHnsZ0FwavEU3OXIqb5KwK_EINdy6eqj5ywmMgb1LCcseoJTvdZ0KCcAW2KW-RD7YhFYGMNB5psTQ6y6uicqcerSY2UKsYVt0dxOmhFt5Ad8zFfDelBtOoPZeAv5iw6B6go7pRH-Yy_tqqRKEBBCpIL6"/>
+</div>
+</div>
+<div class="lg:col-span-7 lg:pl-12">
+<span class="text-secondary font-headline font-bold tracking-[0.2em] uppercase text-sm mb-6 block">Our Legacy</span>
+<h2 class="text-primary font-headline font-extrabold text-4xl md:text-6xl mb-8 leading-tight">
+                        The Rawat Story: <br/><span class="font-light italic">A Botanical Atelier</span>
+</h2>
+<div class="space-y-6 text-on-surface/80 text-lg leading-relaxed max-w-xl">
+<p>
+                            Founded on the principles of regenerative alchemy, Rawat Organics is more than a farm. It is a sanctuary where ancestral wisdom meets modern sustainability. 
+                        </p>
+<p>
+                            Every seed we plant and every oil we press is a testament to our commitment to the earth's rhythm. We believe that true luxury lies in the purity of the process and the integrity of the soil.
+                        </p>
+<div class="pt-8">
+<a class="inline-flex items-center gap-3 text-primary font-headline font-bold border-b-2 border-primary pb-1 hover:gap-5 transition-all" href="#">
+                                Discover Our Heritage <span class="material-symbols-outlined">arrow_forward</span>
+</a>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Product Collection Section -->
+<section class="py-24 bg-surface-container-low" id="collection">
+<div class="max-w-screen-2xl mx-auto px-8">
+<div class="mb-20 text-center">
+<h2 class="text-primary font-headline font-extrabold text-4xl md:text-5xl mb-4">Curated Collections</h2>
+<div class="w-24 h-1 bg-secondary mx-auto rounded-full"></div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+<!-- Category 1 -->
+<div class="group relative overflow-hidden rounded-[2rem] editorial-shadow bg-surface-container-lowest">
+<div class="aspect-[16/10] overflow-hidden">
+<img class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="artistic arrangement of various organic whole grains in wooden bowls on a rustic stone table with soft morning light" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBZSrEcfiy193YmmwsCLIGy2t2igjJJz1g58TfK95djBy1rUFu3YXHV5PmW3sujfLYgeCDV5B_884H9r1AzryXBKtNgiNFBMLizaRTOjobvkeu_TPnpz6aMg_DIE_9rBP-lS57JIeH05V2C3Jf63R-lUjZ8LrHWgYL0cpnn_GFyyWfLW4ZwPYUwE1RZRlhjUT04ZCRd-qmsMG1XXR4BK6XtDTbzwV4Zuh-Vqzty6uha1mwfNidt0gxM1NcFuyG5KiosXBjPCQJMaM_1"/>
+</div>
+<div class="p-10">
+<h3 class="text-primary font-headline font-bold text-3xl mb-4">Organic Grains</h3>
+<p class="text-on-surface/70 mb-8 leading-relaxed">
+                            Ancient varieties preserved through generations, harvested at their nutritional peak.
+                        </p>
+<button class="px-8 py-3 bg-primary-container text-on-primary-container rounded-full font-headline font-bold text-sm transition-all hover:bg-primary active:scale-95">
+                            Learn More
+                        </button>
+</div>
+</div>
+<!-- Category 2 -->
+<div class="group relative overflow-hidden rounded-[2rem] editorial-shadow bg-surface-container-lowest">
+<div class="aspect-[16/10] overflow-hidden">
+<img class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="vibrant heap of exotic spices including saffron strands, cinnamon sticks, and star anise on a dark textured background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDN2bNy5pm_iLMSE5ot_YiQNIFlZV4g6bqbrV2v5wDsIzZ8kwz39eSfxtsC9afgEHcHP_NgZJ_qrQvorlrHn6iHFU-VbVnOEenRRuhJXY6V_OvcDlVNRikZtSMmY2B9i6mviqd31dTBrnwOBkivYLHUDgOhguKnh6LJYTQUK9e0CTnQdjjHho1Blj-0pv2QixNN_gFLvWTrtSW3vY1bGtHIkOxEmkZJ-hxyYRbpiZbVig6RUkPTzwriCw70gCKtWdPvqkulX9_yD0b6"/>
+</div>
+<div class="p-10">
+<h3 class="text-primary font-headline font-bold text-3xl mb-4">Heritage Spices</h3>
+<p class="text-on-surface/70 mb-8 leading-relaxed">
+                            Single-origin aromatics that transform the kitchen into a sensory workshop.
+                        </p>
+<button class="px-8 py-3 bg-primary-container text-on-primary-container rounded-full font-headline font-bold text-sm transition-all hover:bg-primary active:scale-95">
+                            Learn More
+                        </button>
+</div>
+</div>
+<!-- Category 3 -->
+<div class="group relative overflow-hidden rounded-[2rem] editorial-shadow bg-surface-container-lowest">
+<div class="aspect-[16/10] overflow-hidden">
+<img class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="golden cold-pressed organic oil being poured into a clear glass bottle with olives and herbs in the background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDb1-5cSmQrqDZyBOFClGuA4W7jcsL0ht51A162hyP5gX2ST4CsWj5NWE5JMqRSKda0AzP0tIfV9lDL83bohLGfx4k8h2Z8otva8PrruWZxhI91dNpqBUdDBRYD6XewAtjrKBZmSSnx8idc2cwqF1yhd7bU3c2UHzEPQ9TQh9iTDe4Yd7jAXgYKp3YdGzMC-Qy5uMEdIyBp8MEVQMm_p2Q99fMzc8oGvt4SGbHcJiV85cTFdMMjMXMvMPtFUNL2E7J1yeTNX3tvEp2N"/>
+</div>
+<div class="p-10">
+<h3 class="text-primary font-headline font-bold text-3xl mb-4">Pure Oils</h3>
+<p class="text-on-surface/70 mb-8 leading-relaxed">
+                            Cold-pressed elixirs retaining the vital nutrients and intense flavors of the source.
+                        </p>
+<button class="px-8 py-3 bg-primary-container text-on-primary-container rounded-full font-headline font-bold text-sm transition-all hover:bg-primary active:scale-95">
+                            Learn More
+                        </button>
+</div>
+</div>
+<!-- Category 4 -->
+<div class="group relative overflow-hidden rounded-[2rem] editorial-shadow bg-surface-container-lowest">
+<div class="aspect-[16/10] overflow-hidden">
+<img class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="luxury assortment of dried apricots, figs, and almonds elegantly arranged on a marble platter" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAYTXT7KZGasm0CTqF8ld-W9pOY3vuOrNUFkMpYja0gKxqBCdmEkH8VXh3Yf-2oGL0p1CoNiKNhrq7VmKHF2_N-pI_kafF6g3LYX7VosmwbUr4qdHWyJL9kWRQ3anHA81kPO8qf4fDQhbXKCGYMtQ8HgjEGhIlTjwza1AvLHk9-H0oVAEEY2iGHOmacrN4c3I-6SkHDwjZyagupeQkF7I-1vHDyUWpljYBNSpmWqR6fa1aAGggL6KYJC_76po7pUmvoS6Tj0tLyDsaP"/>
+</div>
+<div class="p-10">
+<h3 class="text-primary font-headline font-bold text-3xl mb-4">Exotic Dry Fruits</h3>
+<p class="text-on-surface/70 mb-8 leading-relaxed">
+                            Sun-dried treasures from around the world, handled with artisan care.
+                        </p>
+<button class="px-8 py-3 bg-primary-container text-on-primary-container rounded-full font-headline font-bold text-sm transition-all hover:bg-primary active:scale-95">
+                            Learn More
+                        </button>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Why Choose Us -->
+<section class="py-32 bg-primary text-on-primary overflow-hidden relative">
+<div class="absolute inset-0 opacity-5 pointer-events-none">
+<div class="grid grid-cols-6 h-full w-full">
+<div class="border-r border-on-primary"></div>
+<div class="border-r border-on-primary"></div>
+<div class="border-r border-on-primary"></div>
+<div class="border-r border-on-primary"></div>
+<div class="border-r border-on-primary"></div>
+<div></div>
+</div>
+</div>
+<div class="max-w-screen-2xl mx-auto px-8 relative z-10">
+<div class="grid grid-cols-1 lg:grid-cols-4 gap-12">
+<div class="flex flex-col items-start space-y-6 group">
+<div class="w-16 h-16 rounded-2xl bg-primary-container flex items-center justify-center text-on-primary-container transition-transform duration-500 group-hover:rotate-12">
+<span class="material-symbols-outlined text-4xl">verified</span>
+</div>
+<h4 class="font-headline font-bold text-2xl">100% Organic</h4>
+<p class="text-on-primary/60 leading-relaxed">Every product is certified to the highest global organic standards.</p>
+</div>
+<div class="flex flex-col items-start space-y-6 group">
+<div class="w-16 h-16 rounded-2xl bg-primary-container flex items-center justify-center text-on-primary-container transition-transform duration-500 group-hover:rotate-12">
+<span class="material-symbols-outlined text-4xl">eco</span>
+</div>
+<h4 class="font-headline font-bold text-2xl">No Chemicals</h4>
+<p class="text-on-primary/60 leading-relaxed">Zero synthetic pesticides or fertilizers, ever. Purely nature's design.</p>
+</div>
+<div class="flex flex-col items-start space-y-6 group">
+<div class="w-16 h-16 rounded-2xl bg-primary-container flex items-center justify-center text-on-primary-container transition-transform duration-500 group-hover:rotate-12">
+<span class="material-symbols-outlined text-4xl">agriculture</span>
+</div>
+<h4 class="font-headline font-bold text-2xl">Farm Fresh</h4>
+<p class="text-on-primary/60 leading-relaxed">Direct from our botanical atelier to your table, minimizing travel time.</p>
+</div>
+<div class="flex flex-col items-start space-y-6 group">
+<div class="w-16 h-16 rounded-2xl bg-primary-container flex items-center justify-center text-on-primary-container transition-transform duration-500 group-hover:rotate-12">
+<span class="material-symbols-outlined text-4xl">workspace_premium</span>
+</div>
+<h4 class="font-headline font-bold text-2xl">Trusted Quality</h4>
+<p class="text-on-primary/60 leading-relaxed">A heritage of excellence spanning three decades of conscious cultivation.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Testimonials -->
+<section class="py-32 bg-surface">
+<div class="max-w-screen-2xl mx-auto px-8">
+<div class="flex flex-col md:flex-row justify-between items-end mb-16 gap-8">
+<div class="max-w-2xl">
+<span class="text-secondary font-headline font-bold tracking-widest uppercase text-sm mb-4 block">Voices</span>
+<h2 class="text-primary font-headline font-extrabold text-4xl md:text-5xl">The Conscious Voice</h2>
+</div>
+<div class="flex gap-4">
+<button class="w-12 h-12 rounded-full border border-outline/30 flex items-center justify-center hover:bg-primary hover:text-white transition-all">
+<span class="material-symbols-outlined">chevron_left</span>
+</button>
+<button class="w-12 h-12 rounded-full border border-outline/30 flex items-center justify-center hover:bg-primary hover:text-white transition-all">
+<span class="material-symbols-outlined">chevron_right</span>
+</button>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+<!-- Testimonial 1 -->
+<div class="bg-surface-container p-10 rounded-[2.5rem] flex flex-col justify-between h-full group hover:bg-surface-container-high transition-colors">
+<div>
+<div class="flex text-secondary mb-8">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+</div>
+<p class="text-primary font-body text-xl italic leading-relaxed mb-8">
+                            "The aromatic quality of their heritage spices is unmatched. It's like cooking with the soul of the earth."
+                        </p>
+</div>
+<div>
+<p class="font-headline font-bold text-primary">Eleanor Vance</p>
+<p class="text-on-surface/50 text-sm">Culinary Director</p>
+</div>
+</div>
+<!-- Testimonial 2 -->
+<div class="bg-surface-container p-10 rounded-[2.5rem] flex flex-col justify-between h-full group hover:bg-surface-container-high transition-colors">
+<div>
+<div class="flex text-secondary mb-8">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+</div>
+<p class="text-primary font-body text-xl italic leading-relaxed mb-8">
+                            "Finding true organic authenticity is rare. Rawat Organics is my primary source for all botanical essentials."
+                        </p>
+</div>
+<div>
+<p class="font-headline font-bold text-primary">Julian Thorne</p>
+<p class="text-on-surface/50 text-sm">Wellness Practitioner</p>
+</div>
+</div>
+<!-- Testimonial 3 -->
+<div class="bg-surface-container p-10 rounded-[2.5rem] flex flex-col justify-between h-full group hover:bg-surface-container-high transition-colors">
+<div>
+<div class="flex text-secondary mb-8">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+</div>
+<p class="text-primary font-body text-xl italic leading-relaxed mb-8">
+                            "Their commitment to regenerative farming is inspiring. You can actually taste the difference in the grains."
+                        </p>
+</div>
+<div>
+<p class="font-headline font-bold text-primary">Dr. Amara Singh</p>
+<p class="text-on-surface/50 text-sm">Environmental Scientist</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Call To Action -->
+<section class="py-24 px-8">
+<div class="max-w-screen-xl mx-auto rounded-[3rem] overflow-hidden relative editorial-shadow">
+<img class="absolute inset-0 w-full h-full object-cover" data-alt="misty forest floor with sunlight filtering through canopy onto vibrant green ferns and moss-covered stones" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDlNBT1hdubO6IP5FM74ZOKnEI6UAUNJJHtMqtoFTtvKeWG3UT-ia7lmi1N8ExBiEnMq9AEgnLKaeFzXY1tDfl8rA574jFc5PRan8avSzAayuiG9daEqvarnQUxrDbr6UV_GFMbMh0ozT3cqvU_5184U7Ivld-mBKFLmR8oSmGix1Bl5ZJRStIOuATzclowhKv1CvrXpbuhG9hDqFP8B931jJKWKIUcYx0yMxqf4rm5pmPJLCKvr_kC-_vPMBCjTvWJeNRI-bg8HFOY"/>
+<div class="absolute inset-0 bg-primary/80 backdrop-blur-sm"></div>
+<div class="relative z-10 px-8 py-20 text-center flex flex-col items-center">
+<h2 class="text-white font-headline font-extrabold text-4xl md:text-6xl mb-6 max-w-3xl">Join the Conscious Community</h2>
+<p class="text-white/70 text-lg mb-12 max-w-xl mx-auto">Receive updates on our harvests, seasonal offerings, and botanical wisdom.</p>
+<form class="w-full max-w-lg flex flex-col sm:flex-row gap-4">
+<input class="flex-grow bg-white/10 border border-white/20 text-white placeholder:text-white/40 px-6 py-4 rounded-full focus:outline-none focus:ring-2 focus:ring-primary-container transition-all" placeholder="Your email address" type="email"/>
+<button class="bg-white text-primary px-10 py-4 rounded-full font-headline font-bold hover:bg-surface-container-highest transition-all">Subscribe</button>
+</form>
+</div>
+</div>
+</section>
+<!-- Footer -->
+<footer class="bg-emerald-950 dark:bg-zinc-950 w-full rounded-t-3xl mt-20">
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 px-12 py-24 w-full">
+<div class="space-y-6">
+<div class="text-2xl font-plus-jakarta font-black text-emerald-50">Rawat Organics</div>
+<p class="text-emerald-50/70 font-manrope text-sm tracking-wide leading-relaxed">
+                    Cultivating the essence of nature through ancient wisdom and modern precision.
+                </p>
+</div>
+<div class="space-y-6">
+<h5 class="text-emerald-50 font-bold uppercase tracking-widest text-xs">Explore</h5>
+<ul class="space-y-4">
+<li><a class="text-emerald-50/70 hover:text-emerald-50 transition-transform hover:translate-x-1 inline-block" href="#">Sustainability</a></li>
+<li><a class="text-emerald-50/70 hover:text-emerald-50 transition-transform hover:translate-x-1 inline-block" href="#">Press</a></li>
+<li><a class="text-emerald-50/70 hover:text-emerald-50 transition-transform hover:translate-x-1 inline-block" href="#">Legal</a></li>
+<li><a class="text-emerald-50/70 hover:text-emerald-50 transition-transform hover:translate-x-1 inline-block" href="#">Privacy</a></li>
+</ul>
+</div>
+<div class="space-y-6">
+<h5 class="text-emerald-50 font-bold uppercase tracking-widest text-xs">Connect</h5>
+<ul class="space-y-4">
+<li><a class="text-emerald-50/70 hover:text-emerald-50 transition-transform hover:translate-x-1 inline-block" href="#">Instagram</a></li>
+<li><a class="text-emerald-50/70 hover:text-emerald-50 transition-transform hover:translate-x-1 inline-block" href="#">LinkedIn</a></li>
+<li><a class="text-emerald-50/70 hover:text-emerald-50 transition-transform hover:translate-x-1 inline-block" href="#">Twitter</a></li>
+</ul>
+</div>
+<div class="space-y-6">
+<h5 class="text-emerald-50 font-bold uppercase tracking-widest text-xs">Atelier Location</h5>
+<p class="text-emerald-50/70 font-manrope text-sm leading-relaxed">
+                    The Highland Estates,<br/>
+                    Plot 12, Valley Route,<br/>
+                    Organic Meadows, UK
+                </p>
+</div>
+</div>
+<div class="px-12 py-8 border-t border-white/10 flex justify-between items-center text-xs text-emerald-50/50 font-manrope">
+<span>© 2024 Rawat Organics. Cultivating Essence.</span>
+<button class="flex items-center gap-2 hover:text-white transition-colors" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+                Back to top <span class="material-symbols-outlined text-sm">arrow_upward</span>
+</button>
+</div>
+</footer>
+</body></html>
