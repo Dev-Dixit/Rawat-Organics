@@ -8,7 +8,7 @@ import { PillLink } from "@/components/ui/PillButton";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const VIDEO_SRC = "/video/landingpage.mp4";
+const VIDEO_SRC = "/video/landingpage2.mp4";
 
 /**
  * Scroll track height — lower = full video scrubs in fewer pixels (faster frame advance).
@@ -91,7 +91,7 @@ export function HeroSection() {
             src={VIDEO_SRC}
             muted
             playsInline
-            loop={false}
+            loop={true}
             preload="auto"
             autoPlay
             controls={false}

@@ -22,7 +22,7 @@ export function Header() {
             href="/"
             className="font-headline text-xl font-bold tracking-tighter text-primary dark:text-emerald-50"
           >
-            Rawat Organics
+            Rawat Organic
           </Link>
 
           <div className="hidden items-center space-x-10 font-headline text-sm font-bold tracking-tight md:flex">
