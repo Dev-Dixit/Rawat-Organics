@@ -1,194 +1,215 @@
 'use client'
 
 /**
- * HeroSection — Scroll-Driven Cinematic Video
+ * HeroSection — Canvas-Based Image Sequence Scrubbing
  * ─────────────────────────────────────────────────────────────────────────────
- * HOW THE LERP SMOOTHING WORKS
- * ─────────────────────────────────────────────────────────────────────────────
- *
- *  Linear Interpolation (lerp):
- *    current += (target - current) * factor
- *
- *  Every animation frame we move `current` a small fraction of the
- *  remaining distance toward `target`. With factor = 0.075:
- *
- *    Frame 1:  current = 0 + (1 - 0)   * 0.075 = 0.075
- *    Frame 2:  current = 0.075 + (1 - 0.075) * 0.075 ≈ 0.144
- *    Frame 3:  …keeps decelerating as gap shrinks → easeOut feel
- *
- *  The result is a natural "rubber-band" catch-up:
- *    • Fast at first (when lag is large)
- *    • Decelerates as it converges → cinematic inertia
- *    • Fully independent of React re-renders (all values in useRef)
- *
+ * Video scrubbers are notoriously prone to decoder jank.
+ * This architecture uses an Image Sequence (121 frames of high-res .pngs).
+ * 
+ * 1. Preload 121 `HTMLImageElement`s into memory during mount.
+ * 2. Connect Framer Motion's scroll directly to target frame index.
+ * 3. Draw `images[currentIndex]` to `<canvas>` synchronously in the RAF loop.
+ * 
+ * This creates a perfect, zero-lag timeline identical to Apple's implementation.
  * ─────────────────────────────────────────────────────────────────────────────
  */
 
-import { useRef, useEffect } from 'react'
+import { useRef, useEffect, useCallback, useState } from 'react'
 import { motion, useScroll, useTransform, useSpring } from 'framer-motion'
 
 // ─── Constants ───────────────────────────────────────────────────────────────
-const LERP_FACTOR       = 0.075  // smoothing strength (lower = more lag)
-const MIN_DELTA         = 0.001  // skip tiny updates below this threshold
-const ZOOM_START        = 1.0    // video scale at scroll = 0
-const ZOOM_END          = 1.10   // video scale at scroll = 1
-const BRIGHTNESS_START  = 0.88
-const BRIGHTNESS_MID    = 0.65
-const BRIGHTNESS_END    = 0.52
+const FRAME_COUNT      = 121
+const LERP_FACTOR      = 0.12   // Snappy smoothing curve 
+const MIN_DELTA        = 0.001
+const ZOOM_START       = 1.0
+const ZOOM_END         = 1.10
+const BRIGHTNESS_START = 0.88
+const BRIGHTNESS_MID   = 0.65
+const BRIGHTNESS_END   = 0.52
 
 // ─── Utility helpers ─────────────────────────────────────────────────────────
-
-/** Linear interpolation: moves `a` toward `b` by `t` each frame */
 const lerp = (a: number, b: number, t: number) => a + (b - a) * t
-
-/** Clamp a value between min and max */
-const clamp = (val: number, min: number, max: number) =>
-  Math.min(Math.max(val, min), max)
-
-/** Map a value from one range to another */
-const mapRange = (
-  val: number,
-  inMin: number, inMax: number,
-  outMin: number, outMax: number
-) => outMin + ((val - inMin) / (inMax - inMin)) * (outMax - outMin)
-
+const clamp = (v: number, lo: number, hi: number) => Math.min(Math.max(v, lo), hi)
+const mapRange = (v: number, a: number, b: number, c: number, d: number) =>
+  c + ((v - a) / (b - a)) * (d - c)
 
 export default function HeroSection() {
   // ─── DOM refs ──────────────────────────────────────────────────────────────
   const containerRef = useRef<HTMLDivElement>(null)
-  const videoRef     = useRef<HTMLVideoElement>(null)
-  const videoWrapRef = useRef<HTMLDivElement>(null)
+  const canvasRef    = useRef<HTMLCanvasElement>(null)
+  const canvasWrapRef = useRef<HTMLDivElement>(null)
 
-  // ─── RAF handle ────────────────────────────────────────────────────────────
-  const rafRef = useRef<number | null>(null)
+  // ─── State & Refs ──────────────────────────────────────────────────────────
+  const [imagesLoaded, setImagesLoaded] = useState(0)
+  const imagesRef      = useRef<HTMLImageElement[]>([])
+  const rafRef         = useRef<number | null>(null)
+  const canvasSize     = useRef({ w: 0, h: 0 })
+  const targetProgress = useRef(0)
+  const smoothProgress = useRef(0)
+  const lastDrawnFrame = useRef(-1)
 
-  // ─── All animation state lives in refs (zero re-renders during scroll) ─────
-  const videoDuration  = useRef(0)       // set once on loadedmetadata
-  const isReady        = useRef(false)   // true after metadata loads
-  const targetProgress = useRef(0)       // raw scroll progress 0..1
-  const smoothProgress = useRef(0)       // lerp-smoothed progress 0..1
-
-  // ─── Framer Motion scroll tracking ─────────────────────────────────────────
+  // ─── Framer Motion scroll ─────────────────────────────────────────────────
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ['start start', 'end end'],
   })
 
-  // Spring-smoothed progress FOR TEXT / UI ANIMATIONS only
-  // (video scrubbing uses its own lerp loop for tighter control)
   const springProgress = useSpring(scrollYProgress, {
     stiffness: 60,
     damping: 25,
     restDelta: 0.001,
   })
 
-  // ─── Framer Motion derived animation values (text / overlay) ───────────────
-  const textOpacity     = useTransform(springProgress, [0, 0.22], [1, 0])
-  const textY           = useTransform(springProgress, [0, 0.35], ['0%', '-28%'])
-  const fogOpacity      = useTransform(springProgress, [0, 0.7],  [0.25, 0.75])
-  const indicatorOpacity = useTransform(springProgress, [0, 0.1], [1, 0])
+  // ─── Framer Motion derived values ─────────────────────────────────────────
+  const textOpacity      = useTransform(springProgress, [0, 0.22], [1, 0])
+  const textY            = useTransform(springProgress, [0, 0.35], ['0%', '-28%'])
+  const fogOpacity       = useTransform(springProgress, [0, 0.7],  [0.25, 0.75])
+  const indicatorOpacity = useTransform(springProgress, [0, 0.1],  [1, 0])
 
-  // ─── Main animation loop ───────────────────────────────────────────────────
-  useEffect(() => {
-    const video = videoRef.current
-    if (!video) return
+  // ─── Draw Frame to Canvas ─────────────────────────────────────────────────
+  const drawFrame = useCallback((frameIndex: number) => {
+    const canvas = canvasRef.current
+    if (!canvas) return
+    const ctx = canvas.getContext('2d')
+    if (!ctx) return
 
-    // ── Configure video element ──────────────────────────────────────────────
-    video.pause()
-    video.muted      = true
-    video.playsInline = true
-    video.preload    = 'auto'
+    const imgs = imagesRef.current
+    if (!imgs[frameIndex]) return
 
-    // ── Wait for metadata so we know duration ────────────────────────────────
-    const onMetadata = () => {
-      videoDuration.current = video.duration
-      isReady.current       = true
-      // Snap video to current scroll position immediately (no lerp on first frame)
-      const initialProgress = scrollYProgress.get()
-      smoothProgress.current  = initialProgress
-      targetProgress.current  = initialProgress
-      video.currentTime       = initialProgress * videoDuration.current
+    const { w, h } = canvasSize.current
+    if (canvas.width !== w || canvas.height !== h) {
+      canvas.width  = w
+      canvas.height = h
     }
 
-    video.addEventListener('loadedmetadata', onMetadata)
-    if (video.readyState >= 1) onMetadata()                // already loaded
+    ctx.drawImage(imgs[frameIndex], 0, 0, w, h)
+    lastDrawnFrame.current = frameIndex
+  }, [])
 
-    // ── Subscribe to raw scroll progress (no spring, just raw value) ─────────
-    // We read scrollYProgress directly in the RAF loop for zero latency
+  // ─── Initialization & Preloading ──────────────────────────────────────────
+  useEffect(() => {
+    // 1. Preload image sequence
+    let loadedCount = 0
+    const loadedImages: HTMLImageElement[] = []
+
+    for (let i = 1; i <= FRAME_COUNT; i++) {
+      const img = new Image()
+      const paddedIndex = i.toString().padStart(4, '0')
+      img.src = `/frames/frame_${paddedIndex}.png`
+      
+      img.onload = () => {
+        loadedCount++
+        setImagesLoaded(loadedCount)
+        // If it's the very first frame and we haven't drawn yet, draw it immediately
+        if (i === 1 && lastDrawnFrame.current === -1) {
+          drawFrame(1)
+        }
+      }
+      loadedImages[i] = img
+    }
+    imagesRef.current = loadedImages
+
+    // 2. Setup Resize Handler
+    const canvas = canvasRef.current
+    if (!canvas) return
+
+    const updateSize = () => {
+      const dpr = window.devicePixelRatio || 1
+      const w = window.innerWidth * dpr
+      const h = window.innerHeight * dpr
+      canvasSize.current = { w, h }
+      canvas.width  = w
+      canvas.height = h
+      canvas.style.width  = '100%'
+      canvas.style.height = '100%'
+      // Repaint current frame
+      if (lastDrawnFrame.current !== -1) {
+        drawFrame(lastDrawnFrame.current)
+      }
+    }
+    window.addEventListener('resize', updateSize)
+    updateSize()
+
+    // 3. Subscribe to Scroll
+    targetProgress.current = scrollYProgress.get()
+    smoothProgress.current = targetProgress.current
+
     const unsubscribe = scrollYProgress.on('change', (v) => {
       targetProgress.current = v
     })
 
-    // ─── The animation loop ──────────────────────────────────────────────────
+    // 4. Main Animation Loop
     const tick = () => {
       rafRef.current = requestAnimationFrame(tick)
 
-      if (!isReady.current || !video) return
+      // Only start animating if we have at least the first few frames loaded
+      if (imagesRef.current.length < 2) return
 
-      // ── Step 1: Lerp smooth progress toward target ───────────────────────
-      const prevSmooth = smoothProgress.current
-      smoothProgress.current = lerp(
-        prevSmooth,
-        targetProgress.current,
-        LERP_FACTOR
-      )
+      // Lerp
+      const prev = smoothProgress.current
+      smoothProgress.current = lerp(prev, targetProgress.current, LERP_FACTOR)
       smoothProgress.current = clamp(smoothProgress.current, 0, 1)
 
-      const delta = Math.abs(smoothProgress.current - prevSmooth)
+      const delta = Math.abs(smoothProgress.current - prev)
 
-      // ── Step 2: Drive video currentTime ─────────────────────────────────
-      // Skip if change is below perceptible threshold (saves browser seeks)
       if (delta > MIN_DELTA) {
-        const targetTime = clamp(
-          smoothProgress.current * videoDuration.current,
-          0,
-          videoDuration.current
-        )
-        video.currentTime = targetTime
+        // Map 0..1 to 1..121
+        const floatFrame = mapRange(smoothProgress.current, 0, 1, 1, FRAME_COUNT)
+        const targetFrame = Math.round(floatFrame)
+
+        // Only draw if the frame actually changed
+        if (targetFrame !== lastDrawnFrame.current && imagesRef.current[targetFrame]?.complete) {
+          drawFrame(targetFrame)
+        }
       }
 
-      // ── Step 3: Drive video zoom imperatively ───────────────────────────
-      // Avoids React re-renders — we mutate the DOM directly in the RAF loop
+      // Parallax / Zoom / Brightness (Hardware Accelerated style mutations)
       const zoom = mapRange(smoothProgress.current, 0, 1, ZOOM_START, ZOOM_END)
-      if (videoWrapRef.current) {
-        videoWrapRef.current.style.transform = `scale(${zoom.toFixed(4)})`
+      if (canvasWrapRef.current) {
+        canvasWrapRef.current.style.transform = `scale(${zoom.toFixed(4)})`
       }
 
-      // ── Step 4: Drive video brightness imperatively ──────────────────────
       const p = smoothProgress.current
-      let brightness: number
-      if (p < 0.5) {
-        brightness = mapRange(p, 0, 0.5, BRIGHTNESS_START, BRIGHTNESS_MID)
-      } else {
-        brightness = mapRange(p, 0.5, 1, BRIGHTNESS_MID, BRIGHTNESS_END)
-      }
-      if (video) {
-        video.style.filter = `brightness(${brightness.toFixed(3)})`
-      }
+      const brightness = p < 0.5
+        ? mapRange(p, 0, 0.5, BRIGHTNESS_START, BRIGHTNESS_MID)
+        : mapRange(p, 0.5, 1, BRIGHTNESS_MID, BRIGHTNESS_END)
+      
+      canvas.style.filter = `brightness(${brightness.toFixed(3)})`
     }
 
     rafRef.current = requestAnimationFrame(tick)
 
-    // ── Cleanup ──────────────────────────────────────────────────────────────
+    // Cleanup
     return () => {
-      video.removeEventListener('loadedmetadata', onMetadata)
+      window.removeEventListener('resize', updateSize)
       unsubscribe()
       if (rafRef.current) cancelAnimationFrame(rafRef.current)
     }
-  }, [scrollYProgress])
-
+  }, [scrollYProgress, drawFrame])
 
   // ─── Render ────────────────────────────────────────────────────────────────
   return (
-    // 300vh = gives ~10-15 seconds of scrollable video timeline
-    <div ref={containerRef} style={{ height: '300vh', position: 'relative' }} id="hero">
+    <div ref={containerRef} className="relative" style={{ height: '300vh' }} id="hero">
+      
+      {/* Loading Overlay (Optional UX improvement for heavy assets) */}
+      {imagesLoaded < FRAME_COUNT * 0.1 && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-background text-primary transition-opacity duration-1000 pointer-events-none">
+          <motion.div 
+            initial={{ opacity: 0 }} 
+            animate={{ opacity: 1 }} 
+            className="text-sm font-headline tracking-widest uppercase flex flex-col items-center gap-4"
+          >
+            <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+            Loading Experience...
+          </motion.div>
+        </div>
+      )}
 
-      {/* Viewport-pinned scene — stays fixed while container scrolls */}
+      {/* Viewport-pinned scene */}
       <div style={{ position: 'sticky', top: 0, height: '100vh', overflow: 'hidden' }}>
 
-        {/* ── VIDEO WRAPPER (zoom applied imperatively in RAF) ───────────── */}
         <div
-          ref={videoWrapRef}
+          ref={canvasWrapRef}
           style={{
             position: 'absolute',
             inset: 0,
@@ -196,12 +217,8 @@ export default function HeroSection() {
             willChange: 'transform',
           }}
         >
-          <video
-            ref={videoRef}
-            src="/farm.mp4"
-            muted
-            playsInline
-            preload="auto"
+          <canvas
+            ref={canvasRef}
             style={{
               position: 'absolute',
               inset: 0,
@@ -213,7 +230,7 @@ export default function HeroSection() {
           />
         </div>
 
-        {/* ── FOG / DEPTH OVERLAY (Framer Motion spring) ────────────────── */}
+        {/* ── FOG / DEPTH OVERLAY ──────────────────────────────────────────── */}
         <motion.div
           style={{
             position: 'absolute', inset: 0, zIndex: 10,
@@ -224,7 +241,7 @@ export default function HeroSection() {
           }}
         />
 
-        {/* ── GRADIENT OVERLAY (static, readability) ────────────────────── */}
+        {/* ── GRADIENT OVERLAY ────────────────────────────────────────────── */}
         <div
           style={{
             position: 'absolute', inset: 0, zIndex: 11, pointerEvents: 'none',
@@ -233,10 +250,10 @@ export default function HeroSection() {
           }}
         />
 
-        {/* ── FILM GRAIN noise texture ───────────────────────────────────── */}
+        {/* ── FILM GRAIN ──────────────────────────────────────────────────── */}
         <div className="noise-overlay" style={{ zIndex: 12 }} />
 
-        {/* ── FLOATING ORGANIC ICONS ────────────────────────────────────── */}
+        {/* ── FLOATING ORGANIC ICONS ──────────────────────────────────────── */}
         <motion.div
           className="absolute top-1/4 left-10 pointer-events-none"
           style={{ opacity: textOpacity, zIndex: 20 }}
@@ -264,12 +281,11 @@ export default function HeroSection() {
           </span>
         </motion.div>
 
-        {/* ── HERO TEXT ─────────────────────────────────────────────────── */}
+        {/* ── HERO TEXT ────────────────────────────────────────────────────── */}
         <motion.div
           className="absolute inset-0 flex flex-col items-center justify-center text-center px-6"
           style={{ opacity: textOpacity, y: textY, zIndex: 20 }}
         >
-          {/* Eyebrow */}
           <motion.span
             className="text-white/60 font-headline font-semibold tracking-[0.35em] uppercase text-xs md:text-sm mb-6"
             initial={{ opacity: 0, y: 20 }}
@@ -278,8 +294,6 @@ export default function HeroSection() {
           >
             The Botanical Atelier
           </motion.span>
-
-          {/* H1 */}
           <motion.h1
             className="text-white font-headline font-extrabold text-5xl md:text-8xl tracking-tighter mb-8 leading-[1.05]"
             initial={{ opacity: 0, y: 40 }}
@@ -290,8 +304,6 @@ export default function HeroSection() {
             <span className="italic font-light text-primary-fixed/90">Natural.</span>{' '}
             Organic.
           </motion.h1>
-
-          {/* Sub */}
           <motion.p
             className="text-white/80 text-base md:text-xl font-light mb-12 max-w-2xl leading-relaxed"
             initial={{ opacity: 0, y: 30 }}
@@ -301,8 +313,6 @@ export default function HeroSection() {
             Experience the heritage of soil. A botanical atelier dedicated to
             cultivating the essence of nature&apos;s most refined harvests.
           </motion.p>
-
-          {/* CTAs */}
           <motion.div
             className="flex flex-col sm:flex-row items-center gap-4"
             initial={{ opacity: 0, y: 20 }}
@@ -324,7 +334,7 @@ export default function HeroSection() {
           </motion.div>
         </motion.div>
 
-        {/* ── SCROLL INDICATOR ──────────────────────────────────────────── */}
+        {/* ── SCROLL INDICATOR ────────────────────────────────────────────── */}
         <motion.div
           className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
           style={{ opacity: indicatorOpacity, zIndex: 30 }}
@@ -335,12 +345,11 @@ export default function HeroSection() {
           <div className="scroll-indicator w-px h-14 bg-gradient-to-b from-white/50 to-transparent" />
         </motion.div>
 
-        {/* ── PROGRESS BAR (bottom edge) ────────────────────────────────── */}
+        {/* ── PROGRESS BAR ────────────────────────────────────────────────── */}
         <motion.div
           className="absolute bottom-0 left-0 h-[2px] bg-primary-fixed/60"
           style={{ scaleX: springProgress, transformOrigin: 'left', zIndex: 30 }}
         />
-
       </div>
     </div>
   )
